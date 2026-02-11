@@ -18,5 +18,13 @@ export const WORDS = [
     {
         word: "RETIREMENT",
         hint: "Period of life after stopping work"
+    },
+    {
+        word: "BUDGET",
+        hint: "A plan for how to spend and save money"
+    },
+    {
+        word: "DIVIDEND",
+        hint: "A sum of money paid regularly by a company to its shareholders"
     }
 ];

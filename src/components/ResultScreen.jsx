@@ -45,15 +45,16 @@ export default function ResultScreen({ score, onRestart }) {
             color: "bg-blue-600"
         },
         {
-            label: "Share with Friends",
-            icon: Share2,
+            label: "Try Again",
+            icon: PartyPopper,
             primary: false,
-            color: "border-blue-400/50 hover:bg-blue-400/10"
+            color: "border-blue-400/50 hover:bg-blue-400/10",
+            onClick: onRestart
         }
     ];
 
     return (
-        <div className="w-full h-full min-h-screen flex flex-col items-center justify-center p-6 text-center space-y-8">
+        <div className="w-full h-full min-h-screen flex flex-col items-center justify-center p-6 text-center space-y-8 game-bg-gradient">
 
             {/* Trophy Section */}
             <div className="relative">
@@ -79,28 +80,38 @@ export default function ResultScreen({ score, onRestart }) {
             {/* Score Text */}
             <div className="space-y-2">
                 <motion.h2
-                    className="text-3xl font-bold text-white"
+                    className="text-4xl font-game text-white text-stroke-small"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                 >
-                    {score === 5 ? "Perfect Score!" : "Good Game!"}
+                    Quest Complete!
                 </motion.h2>
-                <motion.div
-                    className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 drop-shadow-sm"
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.5, type: "spring" }}
-                >
-                    {score}/5
-                </motion.div>
+                <div className="flex flex-col items-center">
+                    <motion.span 
+                        className="text-blue-300 font-bold uppercase tracking-widest text-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                    >
+                        Total Points
+                    </motion.span>
+                    <motion.div
+                        className="text-8xl font-game text-gradient-gold drop-shadow-lg"
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.6, type: "spring" }}
+                    >
+                        {score}
+                    </motion.div>
+                </div>
                 <motion.p
-                    className="text-blue-200"
+                    className="text-blue-100 font-medium max-w-xs mx-auto text-lg"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 }}
                 >
-                    You're on your way to financial mastery!
+                    You've mastered the basics of financial unscrambling!
                 </motion.p>
             </div>
 
@@ -110,34 +121,34 @@ export default function ResultScreen({ score, onRestart }) {
                     <motion.button
                         key={i}
                         className={`
-               w-full py-4 rounded-xl flex items-center justify-center gap-3 font-bold text-lg transition-all
+               w-full py-4 rounded-3xl flex items-center justify-center gap-3 font-game tracking-wider text-xl transition-all
                ${btn.primary
-                                ? `bg-gradient-to-r ${btn.color} text-white shadow-lg shadow-amber-500/20`
-                                : btn.label.includes('Share')
-                                    ? `border-2 ${btn.color} text-blue-100`
-                                    : `${btn.color} text-white shadow-lg`
+                                ? `bg-gradient-to-r ${btn.color} text-white shadow-[0_8px_0_#92400e,0_15px_25px_rgba(0,0,0,0.4)] border-b-0`
+                                : btn.label.includes('Try')
+                                    ? `border-4 ${btn.color} text-blue-100 bg-white/5`
+                                    : `${btn.color} text-white shadow-[0_8px_0_#1e3a8a]`
                             }
             `}
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: 0.8 + (i * 0.1), type: "spring" }}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={btn.label.includes('Share') ? onRestart : undefined}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={btn.onClick}
                     >
-                        <btn.icon className="w-5 h-5" />
+                        <btn.icon className="w-6 h-6" />
                         {btn.label}
                     </motion.button>
                 ))}
             </div>
 
             <motion.div
-                className="text-xs text-blue-400/60 max-w-xs pt-8"
+                className="text-sm text-blue-200/80 max-w-xs pt-8 leading-relaxed italic"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5 }}
             >
-                Want to secure your future? Connect with our experts to learn more about these products.
+                "The best investment you can make is in yourself."
             </motion.div>
 
         </div>

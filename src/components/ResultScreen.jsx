@@ -84,7 +84,7 @@ export default function ResultScreen({ score, onRestart }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                 >
-                    {score === 5 ? "Perfect Score!" : "Good Game!"}
+                    {score === 100 ? "Perfect Score!" : "Good Game!"}
                 </motion.h2>
                 <motion.div
                     className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 drop-shadow-sm"
@@ -92,7 +92,7 @@ export default function ResultScreen({ score, onRestart }) {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.5, type: "spring" }}
                 >
-                    {score}/5
+                    {score}/100
                 </motion.div>
                 <motion.p
                     className="text-blue-200"

@@ -124,7 +124,7 @@ export default function GameScreen({ onEnd }) {
 
         // Only increment score if not already solved
         if (!solvedIndices.has(wordIndex)) {
-            setScore(prev => prev + 1);
+            setScore(prev => prev + 20);
             setSolvedIndices(prev => new Set(prev).add(wordIndex));
             // Remove from skipped if it was previously skipped
             setSkippedIndices(prev => {
@@ -237,31 +237,31 @@ export default function GameScreen({ onEnd }) {
             <AnimatePresence>
                 {showShuffleAnim && currentWordObj && (
                     <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
                         <motion.div
-                            className="flex flex-col items-center gap-6"
+                            className="flex flex-col items-center gap-4 w-full max-w-[90vw] md:max-w-lg"
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ type: "spring", bounce: 0.3 }}
                         >
-                            <div className="px-8 py-6 bg-gradient-to-br from-green-900/90 to-emerald-900/90 backdrop-blur-xl border border-green-500/40 rounded-3xl shadow-[0_0_60px_rgba(34,197,94,0.3)]">
+                            <div className="px-4 py-5 md:px-8 md:py-6 w-full bg-gradient-to-br from-green-900/90 to-emerald-900/90 backdrop-blur-xl border border-green-500/40 rounded-3xl shadow-[0_0_60px_rgba(34,197,94,0.3)] overflow-hidden flex items-center justify-center">
                                 <Shuffle
                                     text={currentWordObj.word}
-                                    className="text-5xl md:text-6xl font-black tracking-widest"
+                                    className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black tracking-wide md:tracking-widest"
                                     shuffleDirection="up"
                                     duration={0.4}
                                     shuffleTimes={5}
                                     stagger={0.06}
                                     onShuffleComplete={handleShuffleComplete}
-                                    style={{ fontFamily: "'Inter', sans-serif", letterSpacing: '0.15em' }}
+                                    style={{ fontFamily: "'Inter', sans-serif", letterSpacing: 'clamp(0.05em, 2vw, 0.15em)' }}
                                 />
                             </div>
                             <motion.p
-                                className="text-green-300 text-lg font-medium tracking-wide"
+                                className="text-green-300 text-base md:text-lg font-medium tracking-wide"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}

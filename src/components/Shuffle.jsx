@@ -134,7 +134,7 @@ const Shuffle = ({
     return (
         <Tag
             ref={containerRef}
-            className={`inline-flex ${className}`}
+            className={`inline-flex flex-wrap justify-center ${className}`}
             style={{
                 ...style,
                 fontFamily: style.fontFamily || 'inherit',

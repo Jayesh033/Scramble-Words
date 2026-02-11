@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Award, Phone, Share2, Calendar, PartyPopper } from "lucide-react";
+import { Award, Phone, Calendar, PartyPopper } from "lucide-react";
 import confetti from "canvas-confetti";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import BookingPopup from "./BookingPopup";
 
 export default function ResultScreen({ score, onRestart }) {
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     useEffect(() => {
         const end = Date.now() + 1500;
@@ -36,13 +38,15 @@ export default function ResultScreen({ score, onRestart }) {
             label: "Book a Free Session",
             icon: Calendar,
             primary: true,
-            color: "from-amber-500 to-orange-600"
+            color: "from-amber-500 to-orange-600",
+            onClick: () => setIsPopupOpen(true)
         },
         {
             label: "Call Relationship Manager",
             icon: Phone,
             primary: false,
-            color: "bg-blue-600"
+            color: "bg-blue-600",
+            onClick: () => window.location.href = "tel:+9118002095858"
         },
         {
             label: "Try Again",
@@ -150,6 +154,12 @@ export default function ResultScreen({ score, onRestart }) {
             >
                 "The best investment you can make is in yourself."
             </motion.div>
+
+            {/* Booking Popup */}
+            <BookingPopup 
+                isOpen={isPopupOpen} 
+                onClose={() => setIsPopupOpen(false)} 
+            />
 
         </div>
     );

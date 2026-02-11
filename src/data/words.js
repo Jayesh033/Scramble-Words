@@ -30,7 +30,7 @@ export const WORDS = [
     { word: "EQUITY", hint: "The value of the shares issued by a company." },
     { word: "DEBT", hint: "Something, typically money, that is owed or due." },
     { word: "CORPUS", hint: "The capital or principal amount of an estate or fund." },
-    { word: "GOALS", hint: "The object of a person's ambition or effort; an aim or desired result." },
+    { word: "GOALS", hint: "The object of a person's ambition or effort an aim or desired result." },
     { word: "FUTURE", hint: "The time or a period of time following the moment of speaking or writing." },
     { word: "STABILITY", hint: "The state of being stable." },
     { word: "ASSURANCE", hint: "A positive declaration intended to give confidence." },

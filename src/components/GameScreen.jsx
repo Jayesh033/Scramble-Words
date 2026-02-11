@@ -77,7 +77,7 @@ export default function GameScreen({ onEnd }) {
                     <span className="text-2xl font-game text-white">{wordIndex + 1}/{WORDS ? WORDS.length : 0}</span>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-md px-6 py-2 rounded-2xl border border-white/20 text-right">
+                <div className="bg-white/10 backdrop-blur-md px-6 py-2 rounded-2xl border border-white/20 text-center">
                     <span className="text-amber-400 font-bold uppercase tracking-wider text-xs block">Score</span>
                     <span className="text-2xl font-game text-white">{score}</span>
                 </div>

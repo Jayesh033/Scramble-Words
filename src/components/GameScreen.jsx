@@ -195,7 +195,7 @@ export default function GameScreen({ onEnd }) {
                 animate={{ opacity: 1, y: 0 }}
                 key={`hint-pill-${wordIndex}`}
             >
-                <div className="shrink-0 w-12 h-12 sm:w-[4.5rem] sm:h-[4.5rem] rounded-full overflow-hidden border-[3px] border-amber-400 bg-gradient-to-br from-blue-100 to-slate-200 shadow-lg z-10 relative">
+                <div className="shrink-0 w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden border-[3px] border-amber-400 bg-gradient-to-br from-blue-100 to-slate-200 shadow-lg z-10 relative">
                     <img
                         src={expertImg}
                         alt="Expert character"
@@ -203,15 +203,15 @@ export default function GameScreen({ onEnd }) {
                     />
                 </div>
 
-                <div className="flex-1 -ml-6 sm:-ml-10 bg-white/90 backdrop-blur-sm rounded-r-full rounded-l-[2rem] py-2 pl-10 pr-4 sm:pl-14 sm:pr-6 sm:py-4 shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-white/40">
-                    <p className="text-blue-900 font-semibold text-xs sm:text-base leading-tight sm:leading-snug text-center">
+                <div className="flex-1 -ml-6 sm:-ml-10 bg-white/90 backdrop-blur-sm rounded-r-full rounded-l-[2rem] py-3 pl-10 pr-5 sm:pl-14 sm:pr-8 sm:py-5 shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-white/40">
+                    <p className="text-blue-900 font-semibold text-xs sm:text-lg leading-tight sm:leading-snug text-center">
                         {currentWordObj.hint}
                     </p>
                 </div>
             </motion.div>
 
             {/* Success / Error Message / Reveal Pop */}
-            <div className="h-10 sm:h-14 flex items-center justify-center shrink-0">
+            <div className="h-20 sm:h-32 flex items-center justify-center shrink-0">
                 <AnimatePresence mode="wait">
                     {message && (
                         <motion.div
@@ -233,9 +233,15 @@ export default function GameScreen({ onEnd }) {
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.8, opacity: 0 }}
-                            className="z-50 bg-amber-500 text-blue-900 px-6 py-2 sm:px-8 sm:py-3 rounded-2xl font-game text-lg sm:text-2xl shadow-[0_0_25px_rgba(245,158,11,0.5)] border-2 border-amber-300"
+                            className="z-50 bg-amber-500 text-blue-900 px-6 py-3 sm:px-10 sm:py-5 rounded-3xl font-game flex flex-col items-center gap-2 shadow-[0_0_40px_rgba(245,158,11,0.6)] border-2 border-amber-300 max-w-[90%]"
                         >
-                            Correct: <span className="text-white tracking-widest">{currentWordObj.word}</span>
+                            <span className="text-sm sm:text-lg uppercase tracking-widest text-blue-900/60 font-bold">Try Exhausted</span>
+                            <div className="text-xl sm:text-3xl flex flex-col items-center">
+                                <span className="text-white tracking-[0.2em] font-game mb-2">{currentWordObj.word}</span>
+                                <p className="text-xs sm:text-base text-blue-900 font-semibold text-center italic leading-tight">
+                                    "{currentWordObj.hint}"
+                                </p>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -248,17 +254,17 @@ export default function GameScreen({ onEnd }) {
                         key={`${wordIndex}-${i}`}
                         data-box-index={i}
                         onClick={() => handleRemoveLetter(i)}
-                        className={`w-9 h-11 sm:w-12 sm:h-14 rounded-xl border-b-4 bg-white/10 border-white/20 flex items-center justify-center transition-all duration-300
-                            ${placed ? 'cursor-pointer hover:bg-white/20' : ''}
+                        className={`w-16 h-20 sm:w-24 sm:h-34 rounded-3xl transition-all duration-300 flex items-center justify-center bg-white/15 border-b-[8px] border-white/30 shadow-2xl
+                            ${placed ? 'cursor-pointer hover:bg-white/25' : 'bg-white/10'}
                             ${isError ? 'animate-shake border-rose-500 bg-rose-500/10' : ''}
-                            ${(isTransitioning && !isError) ? 'border-emerald-500 bg-emerald-500/20 success-glow scale-105' : ''}
+                            ${(isTransitioning && !isError) ? 'border-amber-400 bg-amber-400/20 success-glow scale-105' : ''}
                         `}
                     >
                         {(placed || isTransitioning) && (
                             <motion.span
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="text-white font-game text-xl sm:text-2xl pointer-events-none"
+                                className="text-white font-game text-5xl sm:text-7xl pointer-events-none drop-shadow-xl"
                             >
                                 {isTransitioning ? (currentWordObj.word[i]) : placed.char}
                             </motion.span>
@@ -275,10 +281,10 @@ export default function GameScreen({ onEnd }) {
                     onLetterSelect={handleLetterPlace}
                 />
 
-                <div className="flex gap-3 sm:gap-4 pb-2 sm:pb-0">
+                <div className="flex gap-4 sm:gap-6 pb-2 sm:pb-0">
                     <motion.button
                         onClick={handleHint}
-                        className="bg-amber-400 backdrop-blur-md px-4 py-1.5 sm:px-6 sm:py-2 rounded-2xl border border-amber-500 text-blue-900 font-game text-base sm:text-lg uppercase tracking-wider hover:bg-amber-300 transition-all shadow-lg"
+                        className="bg-amber-400 backdrop-blur-md px-5 py-2 sm:px-10 sm:py-4 rounded-2xl border-b-4 border-amber-600 text-blue-900 font-game text-lg sm:text-2xl uppercase tracking-widest hover:bg-amber-300 transition-all shadow-xl"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -287,7 +293,7 @@ export default function GameScreen({ onEnd }) {
 
                     <motion.button
                         onClick={handleReset}
-                        className="bg-white/10 backdrop-blur-md px-4 py-1.5 sm:px-6 sm:py-2 rounded-2xl border border-white/20 text-white font-game text-base sm:text-lg uppercase tracking-wider hover:bg-white/20 transition-all"
+                        className="bg-white/10 backdrop-blur-md px-5 py-2 sm:px-10 sm:py-4 rounded-2xl border-b-4 border-white/20 text-white font-game text-lg sm:text-2xl uppercase tracking-widest hover:bg-white/20 transition-all shadow-lg"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -305,14 +311,14 @@ export default function GameScreen({ onEnd }) {
                     40%, 60% { transform: translate3d(4px, 0, 0); }
                 }
                 .success-glow {
-                    animation: success-pulse 1s infinite alternate;
-                    box-shadow: 0 0 25px rgba(16, 185, 129, 0.8), inset 0 0 15px rgba(16, 185, 129, 0.4);
-                    border-color: #10b981 !important;
-                    background: rgba(16, 185, 129, 0.15);
+                    animation: success-pulse 1.2s infinite alternate ease-in-out;
+                    box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), inset 0 0 10px rgba(245, 158, 11, 0.3);
+                    border-color: #f59e0b !important;
+                    background: rgba(245, 158, 11, 0.1);
                 }
                 @keyframes success-pulse {
-                    from { box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.3); transform: scale(1.05); }
-                    to { box-shadow: 0 0 35px rgba(16, 185, 129, 1), inset 0 0 20px rgba(16, 185, 129, 0.5); transform: scale(1.08); }
+                    from { box-shadow: 0 0 8px rgba(245, 158, 11, 0.3), inset 0 0 5px rgba(245, 158, 11, 0.2); transform: scale(1.02); }
+                    to { box-shadow: 0 0 18px rgba(245, 158, 11, 0.6), inset 0 0 12px rgba(245, 158, 11, 0.4); transform: scale(1.05); }
                 }
             `}</style>
         </div>

@@ -8,8 +8,10 @@ import ThankYou from './components/ThankYou';
 function App() {
   const [screen, setScreen] = useState('start'); // 'start', 'game', 'result', 'thankyou'
   const [score, setScore] = useState(0);
+  const [userName, setUserName] = useState('');
 
-  const startGame = () => {
+  const startGame = (name) => {
+    setUserName(name);
     setScreen('game');
   };
 
@@ -20,6 +22,7 @@ function App() {
 
   const restartGame = () => {
     setScore(0);
+    setUserName('');
     setScreen('start');
   };
 
@@ -67,6 +70,7 @@ function App() {
           >
             <ResultScreen
               score={score}
+              firstName={userName}
               onRestart={restartGame}
               onThankYou={showThankYou}
             />
@@ -82,7 +86,7 @@ function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <ThankYou onHome={restartGame} />
+            <ThankYou onHome={restartGame} firstName={userName} />
           </motion.div>
         )}
       </AnimatePresence>

@@ -248,8 +248,8 @@ export default function GameScreen({ onEnd }) {
                     />
                 </div>
 
-                <div className="flex-1 -ml-6 sm:-ml-10 bg-white/90 backdrop-blur-sm rounded-r-full rounded-l-[2rem] py-3 pl-10 pr-5 sm:pl-14 sm:pr-8 sm:py-5 shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-white/40">
-                    <p className="text-blue-900 font-semibold text-xs sm:text-lg leading-tight sm:leading-snug text-center">
+                <div className="flex-1 -ml-8 sm:-ml-12 bg-white/90 backdrop-blur-sm rounded-3xl py-4 pl-12 pr-6 sm:pl-16 sm:pr-8 sm:py-6 shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-white/40">
+                    <p className="text-blue-900 font-bold text-lg sm:text-2xl md:text-3xl leading-tight sm:leading-snug text-center">
                         {currentWordObj.hint}
                     </p>
                 </div>

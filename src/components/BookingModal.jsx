@@ -1,90 +1,180 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Phone, ArrowRight } from 'lucide-react';
+import { X, Calendar } from 'lucide-react';
 
-export default function BookingModal({ isOpen, onClose, onSubmit }) {
-    const [mobile, setMobile] = useState('');
-    const [error, setError] = useState('');
+export default function BookingModal({ isOpen, onClose, onSubmit, initialName }) {
+    const [formData, setFormData] = useState({ name: initialName || '', mobile: '', date: '', time: '' });
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const updateField = (field, val) => {
+        setFormData(p => ({ ...p, [field]: val }));
+        if (errors[field]) setErrors(p => ({ ...p, [field]: null }));
+    };
 
-        // Exact 10 digits validation
-        if (!/^\d{10}$/.test(mobile)) {
-            setError('Please enter a valid 10-digit mobile number.');
-            return;
+    const validate = () => {
+        const errs = {};
+
+        // 1. Name Validation: Letters and spaces only
+        const nameRegex = /^[A-Za-z\s]+$/;
+        if (!formData.name.trim()) {
+            errs.name = "Name is required";
+        } else if (!nameRegex.test(formData.name.trim())) {
+            errs.name = "Name must contain only letters (no numbers or special characters)";
         }
 
-        // Success
-        if (onSubmit) onSubmit({ mobile });
-        onClose();
-        setMobile('');
-        setError('');
+        // 2. Mobile Validation: Exact 10 digits
+        if (!/^\d{10}$/.test(formData.mobile)) {
+            errs.mobile = "Please enter a valid 10-digit mobile number";
+        }
+
+        // 3. Date Validation: Required (Min date handled in input attribute, but good to validate here too)
+        if (!formData.date) {
+            errs.date = "Preferred Date is required";
+        } else {
+            const selectedDate = new Date(formData.date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                errs.date = "Date cannot be in the past";
+            }
+        }
+
+        // 4. Time Validation
+        if (!formData.time) errs.time = "Preferred Time is required";
+
+        setErrors(errs);
+        return Object.keys(errs).length === 0;
     };
 
-    const handleInput = (e) => {
-        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-        setMobile(val);
-        if (error) setError('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+
+        setIsSubmitting(true);
+
+        // Simulate API call or just pass data up
+        // In a real scenario, you might await an API call here
+        setTimeout(() => {
+            setIsSubmitting(false);
+            if (onSubmit) onSubmit(formData);
+            onClose();
+            // Reset form
+            setFormData({ name: '', mobile: '', date: '', time: '' });
+            setErrors({});
+        }, 1000);
     };
+
+    // Get today's date string for min attribute
+    const todayStr = new Date().toISOString().split('T')[0];
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        className="absolute inset-0"
                     />
 
                     <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
+                        initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.95, opacity: 0 }}
-                        className="relative w-full max-w-sm bg-[#0f172a] border border-white/20 p-8 shadow-2xl z-10"
+                        exit={{ scale: 0.9, opacity: 0 }}
+                        className="bg-white p-6 w-full max-w-sm shadow-2xl relative border-4 border-white/50 z-10"
                     >
                         <button
                             onClick={onClose}
-                            className="absolute top-4 right-4 text-white/50 hover:text-white"
+                            className="absolute right-4 top-4 text-slate-300 hover:text-slate-500 transition-colors bg-slate-100 p-1"
                         >
-                            <X className="w-6 h-6" />
+                            <X className="w-5 h-5" />
                         </button>
 
-                        <div className="text-center space-y-4 mb-8">
-                            <h2 className="text-2xl font-bold text-white uppercase tracking-wider">
-                                Book a Slot
-                            </h2>
-                            <p className="text-blue-200 text-sm">
-                                Enter your mobile number to get a call back.
-                            </p>
+                        <div className="flex justify-center mb-2 text-[#FF8C00]">
+                            <Calendar className="w-8 h-8" />
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="relative">
-                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <h2 className="text-[#0066B2] font-black text-center mb-6 text-sm sm:text-base uppercase tracking-tight pt-1">
+                            Book a convenient slot
+                        </h2>
+
+                        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+                            {/* Name Input */}
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Your Name</label>
                                 <input
-                                    type="tel"
-                                    value={mobile}
-                                    onChange={handleInput}
-                                    placeholder="Enter 10-digit number"
-                                    className="w-full bg-white/5 border border-white/20 text-white pl-12 pr-4 py-4 focus:outline-none focus:border-amber-500 transition-colors placeholder:text-gray-500 text-lg tracking-wider font-mono rounded-none"
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={e => updateField('name', e.target.value)}
+                                    className="w-full bg-slate-50 h-11 border-2 border-slate-100 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-blue-200 text-sm font-bold px-4 transition-colors"
+                                    placeholder="Full Name"
                                 />
+                                {errors.name && <span className="text-[10px] text-red-500 ml-1 font-black uppercase tracking-wider">{errors.name}</span>}
                             </div>
 
-                            {error && (
-                                <p className="text-red-400 text-xs font-semibold text-center">
-                                    {error}
-                                </p>
-                            )}
+                            {/* Mobile Input */}
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Mobile Number</label>
+                                <input
+                                    type="tel"
+                                    value={formData.mobile}
+                                    onChange={e => {
+                                        // Only allow digits, max 10
+                                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                        updateField('mobile', val);
+                                    }}
+                                    className="w-full bg-slate-50 h-11 border-2 border-slate-100 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-blue-200 text-sm font-bold px-4 transition-colors"
+                                    placeholder="9876543210"
+                                />
+                                {errors.mobile && <span className="text-[10px] text-red-500 ml-1 font-black uppercase tracking-wider">{errors.mobile}</span>}
+                            </div>
+
+                            {/* Date & Time Grid */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Preferred Date</label>
+                                    <input
+                                        type="date"
+                                        min={todayStr}
+                                        value={formData.date}
+                                        onChange={e => updateField('date', e.target.value)}
+                                        className="w-full bg-slate-50 h-11 border-2 border-slate-100 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-blue-200 text-xs font-bold px-4 transition-colors"
+                                    />
+                                    {errors.date && <span className="text-[10px] text-red-500 ml-1 font-black uppercase tracking-wider">{errors.date}</span>}
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Preferred Time</label>
+                                    <select
+                                        value={formData.time}
+                                        onChange={e => updateField('time', e.target.value)}
+                                        className="w-full bg-slate-50 h-11 border-2 border-slate-100 text-slate-800 focus:outline-none focus:border-blue-200 text-xs font-bold px-4 appearance-none transition-colors"
+                                    >
+                                        <option value="">Select Slot</option>
+                                        {[...Array(12)].map((_, i) => {
+                                            const start = 9 + i;
+                                            const end = start + 1;
+                                            const formatTime = (h) => {
+                                                const amp = h >= 12 ? 'PM' : 'AM';
+                                                const hour = h > 12 ? h - 12 : h;
+                                                return `${hour}:00 ${amp}`;
+                                            };
+                                            const label = `${formatTime(start)} - ${formatTime(end)}`;
+                                            return <option key={start} value={label}>{label}</option>;
+                                        })}
+                                    </select>
+                                    {errors.time && <span className="text-[10px] text-red-500 ml-1 font-black uppercase tracking-wider">{errors.time}</span>}
+                                </div>
+                            </div>
 
                             <button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold py-4 uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg rounded-none"
+                                disabled={isSubmitting}
+                                className="w-full bg-[#FF8C00] hover:bg-[#FF7000] text-white font-black py-4 shadow-[0_6px_0_#993D00] active:translate-y-1 active:shadow-none transition-all uppercase tracking-widest text-sm mt-2 border-2 border-white/20"
                             >
-                                Submit <ArrowRight className="w-5 h-5" />
+                                {isSubmitting ? 'Confirming...' : 'Book a Slot'}
                             </button>
                         </form>
                     </motion.div>

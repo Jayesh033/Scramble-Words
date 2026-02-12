@@ -3,9 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
 import ResultScreen from './components/ResultScreen';
+import ThankYou from './components/ThankYou';
 
 function App() {
-  const [screen, setScreen] = useState('start'); // 'start', 'game', 'result'
+  const [screen, setScreen] = useState('start'); // 'start', 'game', 'result', 'thankyou'
   const [score, setScore] = useState(0);
 
   const startGame = () => {
@@ -20,6 +21,10 @@ function App() {
   const restartGame = () => {
     setScore(0);
     setScreen('start');
+  };
+
+  const showThankYou = () => {
+    setScreen('thankyou');
   };
 
   return (
@@ -60,7 +65,24 @@ function App() {
             exit={{ opacity: 0, scale: 1.1 }}
             transition={{ duration: 0.5 }}
           >
-            <ResultScreen score={score} onRestart={restartGame} />
+            <ResultScreen
+              score={score}
+              onRestart={restartGame}
+              onThankYou={showThankYou}
+            />
+          </motion.div>
+        )}
+
+        {screen === 'thankyou' && (
+          <motion.div
+            key="thankyou"
+            className="w-full h-full absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ThankYou onHome={restartGame} />
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 
-export default function WordLinker({ letters, usedIndices, onLetterSelect }) {
+export default function WordLinker({ letters, usedIndices, hintedIndex, onLetterSelect }) {
     return (
         <div className="relative w-full max-w-[360px] min-h-[140px] flex flex-wrap justify-center gap-3 sm:gap-4 p-4 sm:p-5 bg-white/5 rounded-3xl backdrop-blur-sm border border-white/10 shadow-inner select-none">
             {letters.map((char, i) => {
                 const isUsed = usedIndices.includes(i);
+                const isHinted = hintedIndex === i;
 
                 return (
                     <div key={`bank-${i}`} className="relative w-14 h-14 sm:w-16 sm:h-16">
@@ -34,7 +35,9 @@ export default function WordLinker({ letters, usedIndices, onLetterSelect }) {
                                 whileHover={{ scale: 1.05, zIndex: 30 }}
                                 whileTap={{ scale: 0.95, zIndex: 30 }}
                                 whileDrag={{ scale: 1.1, zIndex: 50 }}
-                                className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center font-game text-3xl sm:text-4xl text-blue-900 shadow-lg cursor-pointer z-20 transition-colors"
+                                className={`w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center font-game text-3xl sm:text-4xl text-blue-900 shadow-lg cursor-pointer z-20 transition-all duration-300
+                                    ${isHinted ? 'hint-glow scale-110' : ''}
+                                `}
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                             >
@@ -42,7 +45,7 @@ export default function WordLinker({ letters, usedIndices, onLetterSelect }) {
                             </motion.div>
                         )}
                         {/* Placeholder for the letter to keep layout stable */}
-                        <div className="absolute inset-0 bg-white/10 rounded-xl border-b-4 border-white/20 shadow-inner -z-10" />
+                        <div className="absolute inset-0 bg-white/5 rounded-xl border-2 border-dotted border-white/20 -z-10" />
                     </div>
                 );
             })}

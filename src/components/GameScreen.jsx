@@ -14,6 +14,8 @@ export default function GameScreen({ onEnd }) {
     const [placedLetters, setPlacedLetters] = useState([]); // Array of {char, originalIndex} or null
     const [usedLetterIndices, setUsedLetterIndices] = useState([]); // Indices from shuffledLetters
     const [hintUsedCount, setHintUsedCount] = useState(0);
+    const [hintedBankIndex, setHintedBankIndex] = useState(null);
+    const [wrongSlotIndices, setWrongSlotIndices] = useState([]);
     const [wrongTryCount, setWrongTryCount] = useState(0);
     const [isLocked, setIsLocked] = useState(false);
     const [showRevealedPop, setShowRevealedPop] = useState(false);
@@ -148,24 +150,67 @@ export default function GameScreen({ onEnd }) {
     };
 
     const handleHint = () => {
-        if (isLocked || isTransitioning || hintUsedCount >= 3 || hintUsedCount >= currentWordObj.word.length) {
-            if (hintUsedCount >= 3) setMessage("Hints Exhausted");
-            setTimeout(() => setMessage(""), 1000);
+        if (isLocked || isTransitioning || hintUsedCount >= 3) {
+            if (hintUsedCount >= 3) {
+                setMessage("Hints Exhausted");
+                setTimeout(() => setMessage(""), 1000);
+            }
             return;
         }
 
-        const nextEmptyIndex = placedLetters.indexOf(null);
-        if (nextEmptyIndex === -1) return;
+        // 2. Identify ALL incorrect placed letters
+        const currentWrongIndices = [];
+        placedLetters.forEach((placed, index) => {
+            if (placed && placed.char !== currentWordObj.word[index]) {
+                currentWrongIndices.push(index);
+            }
+        });
 
-        const targetChar = currentWordObj.word[nextEmptyIndex];
+        if (currentWrongIndices.length > 0) {
+            setMessage("Incorrect letters found!");
+            setWrongSlotIndices(currentWrongIndices);
+            setHintUsedCount(prev => prev + 1); // Reduce hint count
 
-        // Find this character in shuffledLetters that isn't used yet
-        const shuffledIndex = shuffledLetters.findIndex((char, idx) =>
+            // Find the correct letter for the FIRST error to guide the user
+            const firstWrongIndex = currentWrongIndices[0];
+            const targetChar = currentWordObj.word[firstWrongIndex];
+
+            const bankIndex = shuffledLetters.findIndex((char, idx) =>
+                char === targetChar && !usedLetterIndices.includes(idx)
+            );
+
+            if (bankIndex !== -1) {
+                setHintedBankIndex(bankIndex);
+            }
+
+            setTimeout(() => {
+                setHintedBankIndex(null);
+                setWrongSlotIndices([]);
+                setMessage("");
+            }, 2000);
+            return;
+        }
+
+        // 3. If the slot is empty and preceding ones are correct, auto-place
+        // Find the FIRST index that is either empty OR incorrectly filled (after checking for existing wrong ones)
+        let targetIndex = -1;
+        for (let i = 0; i < currentWordObj.word.length; i++) {
+            if (!placedLetters[i] || placedLetters[i].char !== currentWordObj.word[i]) {
+                targetIndex = i;
+                break;
+            }
+        }
+
+        if (targetIndex === -1) return; // Word is already correct but maybe not submitted
+
+        const targetChar = currentWordObj.word[targetIndex];
+
+        const bankIndex = shuffledLetters.findIndex((char, idx) =>
             char === targetChar && !usedLetterIndices.includes(idx)
         );
 
-        if (shuffledIndex !== -1) {
-            handleLetterPlace(shuffledIndex, nextEmptyIndex);
+        if (bankIndex !== -1) {
+            handleLetterPlace(bankIndex, targetIndex);
             setHintUsedCount(prev => prev + 1);
         }
     };
@@ -254,17 +299,23 @@ export default function GameScreen({ onEnd }) {
                         key={`${wordIndex}-${i}`}
                         data-box-index={i}
                         onClick={() => handleRemoveLetter(i)}
-                        className={`w-16 h-20 sm:w-24 sm:h-34 rounded-3xl transition-all duration-300 flex items-center justify-center bg-white/15 border-b-[8px] border-white/30 shadow-2xl
-                            ${placed ? 'cursor-pointer hover:bg-white/25' : 'bg-white/10'}
+                        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl transition-all duration-300 flex items-center justify-center
+                            ${(placed || isTransitioning)
+                                ? 'bg-white shadow-md cursor-pointer hover:bg-white/90'
+                                : 'border-2 border-dotted border-white/20 bg-white/5'
+                            }
                             ${isError ? 'animate-shake border-rose-500 bg-rose-500/10' : ''}
-                            ${(isTransitioning && !isError) ? 'border-amber-400 bg-amber-400/20 success-glow scale-105' : ''}
+                            ${(isTransitioning && !isError) ? 'success-glow' : ''}
+                            ${(wrongSlotIndices.includes(i)) ? 'wrong-glow' : ''}
                         `}
                     >
                         {(placed || isTransitioning) && (
                             <motion.span
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="text-white font-game text-5xl sm:text-7xl pointer-events-none drop-shadow-xl"
+                                className={`font-game text-3xl sm:text-4xl pointer-events-none drop-shadow-sm
+                                    ${placed ? 'text-blue-900' : 'text-white'}
+                                `}
                             >
                                 {isTransitioning ? (currentWordObj.word[i]) : placed.char}
                             </motion.span>
@@ -278,13 +329,14 @@ export default function GameScreen({ onEnd }) {
                     key={`linker-${wordIndex}`}
                     letters={shuffledLetters}
                     usedIndices={usedLetterIndices}
+                    hintedIndex={hintedBankIndex}
                     onLetterSelect={handleLetterPlace}
                 />
 
                 <div className="flex gap-4 sm:gap-6 pb-2 sm:pb-0">
                     <motion.button
                         onClick={handleHint}
-                        className="bg-amber-400 backdrop-blur-md px-5 py-2 sm:px-10 sm:py-4 rounded-2xl border-b-4 border-amber-600 text-blue-900 font-game text-lg sm:text-2xl uppercase tracking-widest hover:bg-amber-300 transition-all shadow-xl"
+                        className="bg-amber-400 backdrop-blur-md px-8 py-3 sm:px-12 sm:py-5 rounded-2xl border-b-8 border-amber-600 text-blue-900 font-game text-xl sm:text-3xl uppercase tracking-widest hover:bg-amber-300 transition-all shadow-2xl"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -311,16 +363,48 @@ export default function GameScreen({ onEnd }) {
                     40%, 60% { transform: translate3d(4px, 0, 0); }
                 }
                 .success-glow {
-                    animation: success-pulse 1.2s infinite alternate ease-in-out;
-                    box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), inset 0 0 10px rgba(245, 158, 11, 0.3);
-                    border-color: #f59e0b !important;
-                    background: rgba(245, 158, 11, 0.1);
+                    animation: success-pulse 0.8s infinite alternate ease-in-out;
+                    box-shadow:
+                        0 0 0 2px rgba(245, 158, 11, 0.4),
+                        0 0 12px rgba(245, 158, 11, 0.6),
+                        inset 0 0 8px rgba(245, 158, 11, 0.1);
+                    z-index: 20;
                 }
                 @keyframes success-pulse {
-                    from { box-shadow: 0 0 8px rgba(245, 158, 11, 0.3), inset 0 0 5px rgba(245, 158, 11, 0.2); transform: scale(1.02); }
-                    to { box-shadow: 0 0 18px rgba(245, 158, 11, 0.6), inset 0 0 12px rgba(245, 158, 11, 0.4); transform: scale(1.05); }
+                    from {
+                        box-shadow:
+                            0 0 0 1px rgba(245, 158, 11, 0.3),
+                            0 0 8px rgba(245, 158, 11, 0.4),
+                            inset 0 0 4px rgba(245, 158, 11, 0.1);
+                    }
+                    to {
+                        box-shadow: 
+                            0 0 0 4px rgba(245, 158, 11, 0.5),
+                            0 0 20px rgba(245, 158, 11, 0.8),
+                            inset 0 0 12px rgba(245, 158, 11, 0.2);
+                    }
                 }
-            `}</style>
+                .hint-glow {
+                    animation: hint-pulse 0.5s infinite alternate ease-in-out;
+                    border: 3px solid #f59e0b !important;
+                    box-shadow: 0 0 20px #f59e0b, inset 0 0 10px #f59e0b;
+                    z-index: 40 !important;
+                }
+                @keyframes hint-pulse {
+                    from { transform: scale(1); box-shadow: 0 0 10px #f59e0b; }
+                    to { transform: scale(1.15); box-shadow: 0 0 30px #f59e0b; }
+                }
+                .wrong-glow {
+                    animation: wrong-pulse 0.5s infinite alternate ease-in-out;
+                    border: 3px solid #ef4444 !important;
+                    box-shadow: 0 0 15px #ef4444;
+                    z-index: 40 !important;
+                }
+                @keyframes wrong-pulse {
+                    from { transform: scale(1); box-shadow: 0 0 8px #ef4444; }
+                    to { transform: scale(1.1); box-shadow: 0 0 20px #ef4444; }
+                }
+          `}</style>
         </div>
     );
 }

@@ -2,13 +2,13 @@ import { motion } from "framer-motion";
 
 export default function WordLinker({ letters, usedIndices, hintedIndex, onLetterSelect }) {
     return (
-        <div className="relative w-full max-w-[360px] min-h-[140px] flex flex-wrap justify-center gap-3 sm:gap-4 p-4 sm:p-5 bg-white/5 rounded-3xl backdrop-blur-sm border border-white/10 shadow-inner select-none">
+        <div className="relative w-full max-w-[360px] min-h-[100px] flex flex-wrap justify-center gap-1.5 sm:gap-4 p-3 sm:p-5 bg-white/5 rounded-3xl backdrop-blur-sm border border-white/10 shadow-inner select-none">
             {letters.map((char, i) => {
                 const isUsed = usedIndices.includes(i);
                 const isHinted = hintedIndex === i;
 
                 return (
-                    <div key={`bank-${i}`} className="relative w-14 h-14 sm:w-16 sm:h-16">
+                    <div key={`bank-${i}`} className="relative w-11 h-11 sm:w-16 sm:h-16">
                         {!isUsed && (
                             <motion.div
                                 layout
@@ -35,7 +35,7 @@ export default function WordLinker({ letters, usedIndices, hintedIndex, onLetter
                                 whileHover={{ scale: 1.05, zIndex: 30 }}
                                 whileTap={{ scale: 0.95, zIndex: 30 }}
                                 whileDrag={{ scale: 1.1, zIndex: 50 }}
-                                className={`w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center font-game text-3xl sm:text-4xl text-blue-900 shadow-lg cursor-pointer z-20 transition-all duration-300
+                                className={`w-11 h-11 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center font-game text-2xl sm:text-4xl text-blue-900 shadow-lg cursor-pointer z-20 transition-all duration-300
                                     ${isHinted ? 'hint-glow scale-110' : ''}
                                 `}
                                 initial={{ scale: 0 }}

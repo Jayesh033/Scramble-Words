@@ -23,7 +23,13 @@ export default function GameScreen({ onEnd }) {
     const [questionResults, setQuestionResults] = useState(new Array(5).fill(null)); // 'correct', 'wrong', or null
 
     // Limit to first 5 questions
-    const gameWords = (WORDS || []).slice(0, 5);
+    const [gameWords, setGameWords] = useState([]);
+
+    useEffect(() => {
+        const shuffled = [...(WORDS || [])].sort(() => Math.random() - 0.5);
+        setGameWords(shuffled.slice(0, 5));
+    }, []);
+
     const currentWordObj = (gameWords && gameWords[wordIndex]) ? gameWords[wordIndex] : null;
 
     // Shuffle letters whenever wordIndex changes
@@ -232,7 +238,7 @@ export default function GameScreen({ onEnd }) {
     if (!currentWordObj) return <div className="text-white p-10 font-game">Loading...</div>;
 
     return (
-        <div className="w-full h-dvh flex flex-col items-center justify-between px-3 py-3 sm:p-4 md:p-6 relative game-bg-gradient overflow-hidden">
+        <div className="w-full h-dvh flex flex-col items-center justify-between px-3 py-3 sm:p-4 md:p-6 relative game-bg-gradient overflow-y-auto">
 
             {/* Top Info Bar */}
             <div className="z-10 w-full max-w-lg flex justify-between items-center mt-1 sm:mt-4 shrink-0">
@@ -320,7 +326,7 @@ export default function GameScreen({ onEnd }) {
                         key={`${wordIndex}-${i}`}
                         data-box-index={i}
                         onClick={() => handleRemoveLetter(i)}
-                        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl transition-all duration-300 flex items-center justify-center
+                        className={`w-11 h-11 sm:w-16 sm:h-16 rounded-xl transition-all duration-300 flex items-center justify-center
                             ${(placed || isTransitioning)
                                 ? 'bg-white shadow-md cursor-pointer hover:bg-white/90'
                                 : 'border-2 border-dotted border-white/20 bg-white/5'
@@ -334,7 +340,7 @@ export default function GameScreen({ onEnd }) {
                             <motion.span
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className={`font-game text-3xl sm:text-4xl pointer-events-none drop-shadow-sm
+                                className={`font-game text-2xl sm:text-4xl pointer-events-none drop-shadow-sm
                                     ${placed ? 'text-blue-900' : 'text-white'}
                                 `}
                             >

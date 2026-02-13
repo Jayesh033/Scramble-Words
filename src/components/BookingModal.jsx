@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Calendar } from 'lucide-react';
 
-export default function BookingModal({ isOpen, onClose, onSubmit, initialName }) {
-    const [formData, setFormData] = useState({ name: initialName || '', mobile: '', date: '', time: '' });
+export default function BookingModal({ isOpen, onClose, onSubmit, initialName, initialMobile }) {
+    const [formData, setFormData] = useState({ name: initialName || '', mobile: initialMobile || '', date: '', time: '' });
+    const [termsAccepted, setTermsAccepted] = useState(false);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,6 +44,11 @@ export default function BookingModal({ isOpen, onClose, onSubmit, initialName })
         // 4. Time Validation
         if (!formData.time) errs.time = "Preferred Time is required";
 
+        // 5. Terms Validation
+        if (!termsAccepted) {
+            errs.terms = "Please accept the terms";
+        }
+
         setErrors(errs);
         return Object.keys(errs).length === 0;
     };
@@ -61,6 +67,7 @@ export default function BookingModal({ isOpen, onClose, onSubmit, initialName })
             onClose();
             // Reset form
             setFormData({ name: '', mobile: '', date: '', time: '' });
+            setTermsAccepted(false);
             setErrors({});
         }, 1000);
     };
@@ -168,6 +175,25 @@ export default function BookingModal({ isOpen, onClose, onSubmit, initialName })
                                     {errors.time && <span className="text-[10px] text-red-500 ml-1 font-black uppercase tracking-wider">{errors.time}</span>}
                                 </div>
                             </div>
+
+                            {/* Terms Checkbox */}
+                            <div className="flex items-start bg-slate-50 p-3 rounded-lg border-2 border-slate-100 gap-3">
+                                <div className="relative flex items-center mt-0.5">
+                                    <input
+                                        type="checkbox"
+                                        checked={termsAccepted}
+                                        onChange={(e) => {
+                                            setTermsAccepted(e.target.checked);
+                                            if (errors.terms) setErrors(p => ({ ...p, terms: null }));
+                                        }}
+                                        className="w-4 h-4 rounded border-slate-300 text-[#0066B2] focus:ring-[#0066B2] cursor-pointer"
+                                    />
+                                </div>
+                                <label className="text-[10px] sm:text-xs text-slate-500 leading-tight">
+                                    I authorize Bajaj Life Insurance to contact me for this request, overriding DND registry.
+                                </label>
+                            </div>
+                            {errors.terms && <div className="text-[10px] text-red-500 font-black uppercase tracking-wider text-center">{errors.terms}</div>}
 
                             <button
                                 type="submit"

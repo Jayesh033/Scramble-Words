@@ -53,11 +53,15 @@ export const submitToLMS = async (data) => {
             },
             body: JSON.stringify(fullPayload)
         });
-        
+
         // Handle opaque responses or JSON
         let result = { success: true };
         try {
-            result = await response.json();
+            const jsonResponse = await response.json();
+            // If the API returns a JSON object, use it.
+            if (jsonResponse && typeof jsonResponse === 'object') {
+                result = { success: true, ...jsonResponse };
+            }
         } catch (e) {
             // ignore JSON parse error if opaque
         }

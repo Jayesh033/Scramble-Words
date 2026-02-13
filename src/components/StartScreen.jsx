@@ -48,11 +48,10 @@ export default function StartScreen({ onStart }) {
                     backgroundRepeat: "no-repeat",
                 }}
             >
-                {/* Start Button */}
-                <div className="z-20 w-[45%] max-w-[170px] sm:w-[55%] sm:max-w-[220px] mb-1 sm:mb-3">
+                <div className="z-20 w-[40%] max-w-[150px] sm:w-[50%] sm:max-w-[200px] mb-1 sm:mb-3">
                     <motion.button
                         onClick={handleStartClick}
-                        className="game-button-blue w-full py-2 sm:py-3 rounded-[1.2rem] sm:rounded-[1.5rem] font-game text-sm sm:text-lg md:text-xl tracking-widest uppercase"
+                        className="game-button-blue w-full py-2 sm:py-2.5 rounded-[1rem] sm:rounded-[1.2rem] font-game text-xs sm:text-base md:text-lg tracking-widest uppercase"
                         initial={{ y: 30, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.3, type: "spring", stiffness: 100 }}

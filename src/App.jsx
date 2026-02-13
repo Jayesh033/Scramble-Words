@@ -5,6 +5,8 @@ import GameScreen from './components/GameScreen';
 import ResultScreen from './components/ResultScreen';
 import ThankYou from './components/ThankYou';
 
+import { useGameState } from './hooks/useGameState';
+
 function App() {
   const [screen, setScreen] = useState('start'); // 'start', 'game', 'result', 'thankyou'
   const [score, setScore] = useState(0);
@@ -30,8 +32,25 @@ function App() {
     setScreen('thankyou');
   };
 
+  const { toast } = useGameState();
+
   return (
     <div className="w-full h-full min-h-screen overflow-hidden font-sans text-white relative">
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: -50, x: "-50%" }}
+            animate={{ opacity: 1, y: 20, x: "-50%" }}
+            exit={{ opacity: 0, y: -50, x: "-50%" }}
+            className={`fixed top-0 left-1/2 z-[200] px-8 py-4 rounded-xl shadow-2xl font-black text-sm sm:text-base tracking-widest uppercase border-2 backdrop-blur-md ${toast.type === 'error' ? 'bg-red-600/90 border-red-400 text-white' : 'bg-[#0066B2]/90 border-blue-400 text-white'
+              }`}
+          >
+            {toast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait">
         {screen === 'start' && (
           <motion.div

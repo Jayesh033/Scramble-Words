@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Star } from "lucide-react";
 import { WORDS } from "../data/words";
 import WordLinker from "./WordLinker";
 import expertImg from "../assets/MaleImg.png";
@@ -19,6 +20,7 @@ export default function GameScreen({ onEnd }) {
     const [wrongTryCount, setWrongTryCount] = useState(0);
     const [isLocked, setIsLocked] = useState(false);
     const [showRevealedPop, setShowRevealedPop] = useState(false);
+    const [questionResults, setQuestionResults] = useState(new Array(5).fill(null)); // 'correct', 'wrong', or null
 
     // Limit to first 5 questions
     const gameWords = (WORDS || []).slice(0, 5);
@@ -95,8 +97,15 @@ export default function GameScreen({ onEnd }) {
     const handleSuccess = () => {
         setScore(prev => prev + 10);
         setMessage("Excellent!");
+        setMessage("Excellent!");
         setIsTransitioning(true);
         setIsLocked(true);
+
+        setQuestionResults(prev => {
+            const next = [...prev];
+            next[wordIndex] = 'correct';
+            return next;
+        });
 
         setTimeout(() => {
             setMessage("");
@@ -118,6 +127,11 @@ export default function GameScreen({ onEnd }) {
 
         if (nextWrongCount >= 2) {
             setIsLocked(true);
+            setQuestionResults(prev => {
+                const next = [...prev];
+                next[wordIndex] = 'wrong';
+                return next;
+            });
             setTimeout(() => {
                 setIsError(false);
                 setMessage("");
@@ -223,13 +237,20 @@ export default function GameScreen({ onEnd }) {
             {/* Top Info Bar */}
             <div className="z-10 w-full max-w-lg flex justify-between items-center mt-1 sm:mt-4 shrink-0">
                 <div className="bg-white/10 backdrop-blur-md px-4 py-1.5 sm:px-6 sm:py-2 rounded-2xl border border-white/20">
-                    <span className="text-blue-300 font-bold uppercase tracking-wider text-[10px] sm:text-xs block text-left">Quest</span>
+                    <span className="text-blue-300 font-bold uppercase tracking-wider text-[10px] sm:text-xs block text-left"></span>
                     <span className="text-xl sm:text-2xl font-game text-white">{wordIndex + 1}/{gameWords ? gameWords.length : 0}</span>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-md px-4 py-1.5 sm:px-6 sm:py-2 rounded-2xl border border-white/20 text-center">
-                    <span className="text-amber-400 font-bold uppercase tracking-wider text-[10px] sm:text-xs block">Score</span>
-                    <span className="text-xl sm:text-2xl font-game text-white">{score}</span>
+                <div className="bg-white/10 backdrop-blur-md px-3 py-2 sm:px-6 sm:py-2 rounded-2xl border border-white/20 flex gap-1 sm:gap-2 justify-center">
+                    {gameWords.map((_, i) => (
+                        <Star
+                            key={i}
+                            className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${questionResults[i] === 'correct' ? 'text-yellow-400 fill-yellow-400' :
+                                questionResults[i] === 'wrong' ? 'text-red-500 fill-red-500' :
+                                    'text-white/30'
+                                }`}
+                        />
+                    ))}
                 </div>
             </div>
 

@@ -23,7 +23,13 @@ export default function GameScreen({ onEnd }) {
     const [questionResults, setQuestionResults] = useState(new Array(5).fill(null)); // 'correct', 'wrong', or null
 
     // Limit to first 5 questions
-    const gameWords = (WORDS || []).slice(0, 5);
+    const [gameWords, setGameWords] = useState([]);
+
+    useEffect(() => {
+        const shuffled = [...(WORDS || [])].sort(() => Math.random() - 0.5);
+        setGameWords(shuffled.slice(0, 5));
+    }, []);
+
     const currentWordObj = (gameWords && gameWords[wordIndex]) ? gameWords[wordIndex] : null;
 
     // Shuffle letters whenever wordIndex changes

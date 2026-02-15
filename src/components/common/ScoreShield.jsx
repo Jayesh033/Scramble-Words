@@ -4,11 +4,9 @@ export default function ScoreShield({ score }) {
     // 1. Ensure score is a number (not string)
     const numericScore = Number(score);
 
-    // 2. Safety Check: Clamp score between 1 and 5
-    // Default to 1 if score is invalid (NaN) to prevent render issues, though logic below handles it
-    // The user requested: const safeScore = Math.min(5, Math.max(1, numericScore));
-    // We add a fallback for NaN to be safe: (numericScore || 1)
-    const safeScore = Math.min(5, Math.max(1, isNaN(numericScore) ? 1 : numericScore));
+    // 2. Safety Check: Clamp score between 0 and 5
+    // Default to 0 if score is invalid (NaN)
+    const safeScore = Math.min(5, Math.max(0, isNaN(numericScore) ? 0 : numericScore));
 
     // Dynamic Glow Color based on score logic
     let glowColor = "rgba(255, 70, 70, 0.25)"; // 1-2 (Red)

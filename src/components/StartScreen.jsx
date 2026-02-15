@@ -163,8 +163,12 @@ export default function StartScreen({ onStart }) {
                                             type="text"
                                             value={userName}
                                             onChange={(e) => {
-                                                setUserName(e.target.value);
-                                                if (errors.name) setErrors({ ...errors, name: '' });
+                                                const val = e.target.value;
+                                                // Only allow letters and spaces
+                                                if (/^[A-Za-z\s]*$/.test(val)) {
+                                                    setUserName(val);
+                                                    if (errors.name) setErrors({ ...errors, name: '' });
+                                                }
                                             }}
                                             placeholder="Full Name"
                                             className={`w-full px-3 py-2.5 min-[375px]:px-4 min-[375px]:py-3 sm:py-3.5 border-4 ${errors.name ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-slate-100 focus:border-[#0066B2]'} focus:outline-none focus:ring-4 focus:ring-[#0066B2]/10 text-slate-800 font-bold text-sm min-[375px]:text-base sm:text-lg transition-all rounded-lg`}
@@ -187,8 +191,12 @@ export default function StartScreen({ onStart }) {
                                             value={phone}
                                             onChange={(e) => {
                                                 const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                                                setPhone(val);
-                                                if (errors.phone) setErrors({ ...errors, phone: '' });
+
+                                                // Only allow validation if empty or starts with 6-9
+                                                if (val === '' || /^[6-9]/.test(val)) {
+                                                    setPhone(val);
+                                                    if (errors.phone) setErrors({ ...errors, phone: '' });
+                                                }
                                             }}
                                             placeholder="9876543210"
                                             className={`w-full px-3 py-2.5 min-[375px]:px-4 min-[375px]:py-3 sm:py-3.5 border-4 ${errors.phone ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-slate-100 focus:border-[#0066B2]'} focus:outline-none focus:ring-4 focus:ring-[#0066B2]/10 text-slate-800 font-bold text-sm min-[375px]:text-base sm:text-lg transition-all rounded-lg`}

@@ -115,7 +115,12 @@ export default function BookingModal({ isOpen, onClose, onSubmit, initialName, i
                                 <input
                                     type="text"
                                     value={formData.name}
-                                    onChange={e => updateField('name', e.target.value)}
+                                    onChange={e => {
+                                        const val = e.target.value;
+                                        if (/^[A-Za-z\s]*$/.test(val)) {
+                                            updateField('name', val);
+                                        }
+                                    }}
                                     className="w-full bg-slate-50 h-11 border-2 border-slate-100 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-blue-200 text-sm font-bold px-4 transition-colors"
                                     placeholder="Full Name"
                                 />
@@ -129,9 +134,21 @@ export default function BookingModal({ isOpen, onClose, onSubmit, initialName, i
                                     type="tel"
                                     value={formData.mobile}
                                     onChange={e => {
-                                        // Only allow digits, max 10
-                                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                                        updateField('mobile', val);
+                                        const rawVal = e.target.value;
+                                        // Handle backspace/deletion
+                                        if (rawVal.length < formData.mobile.length) {
+                                            updateField('mobile', rawVal);
+                                            return;
+                                        }
+
+                                        const val = rawVal.replace(/\D/g, '').slice(0, 10);
+                                        if (val === '') {
+                                            updateField('mobile', '');
+                                        } else {
+                                            if (['6', '7', '8', '9'].includes(val[0])) {
+                                                updateField('mobile', val);
+                                            }
+                                        }
                                     }}
                                     className="w-full bg-slate-50 h-11 border-2 border-slate-100 text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-blue-200 text-sm font-bold px-4 transition-colors"
                                     placeholder="9876543210"

@@ -169,6 +169,14 @@ export default function ResultScreen({ score, onRestart, onThankYou, firstName }
                         <Calendar className="w-4 h-4" />
                         BOOK SLOT
                     </button>
+
+                    {/* Try Again Button (Small - At Bottom) */}
+                    <button
+                        onClick={onRestart}
+                        className="text-white/70 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors underline underline-offset-4 mt-2"
+                    >
+                        Try Again
+                    </button>
                 </div>
             </div>
 

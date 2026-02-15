@@ -4,7 +4,7 @@ import { X, Calendar } from 'lucide-react';
 
 export default function BookingModal({ isOpen, onClose, onSubmit, initialName, initialMobile }) {
     const [formData, setFormData] = useState({ name: initialName || '', mobile: initialMobile || '', date: '', time: '' });
-    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(true);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -114,31 +114,19 @@ export default function ResultScreen({ score, onRestart, onThankYou, firstName }
                 {/* Gap 8px */}
                 <div className="h-2 shrink-0"></div>
 
-                {/* Description & Info Box Block */}
-                <div className="w-full space-y-2">
+                {/* Description */}
+                <div className="w-full">
                     <p className="text-white/80 text-xs leading-tight whitespace-pre-line px-2">
                         {subtext}
                     </p>
-
-                    {/* Compact Info Box inside Description block to save space */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="bg-blue-900/30 border border-white/10 rounded-lg p-2 mx-1 backdrop-blur-sm"
-                    >
-                        <p className="text-white/90 text-[10px] leading-tight font-medium">
-                            "To know more about insurance and savings products, please connect with our relationship manager."
-                        </p>
-                    </motion.div>
                 </div>
 
-                {/* Gap 20px */}
-                <div className="h-5 shrink-0"></div>
+                {/* Gap 16px */}
+                <div className="h-4 shrink-0"></div>
 
                 {/* Actions: Connect & Share */}
                 <div className="w-full flex flex-col gap-3">
-                    {/* Share Button */}
+                    {/* Share Button (Above CTA) */}
                     <motion.button
                         onClick={handleShare}
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -151,6 +139,18 @@ export default function ResultScreen({ score, onRestart, onThankYou, firstName }
                             <path d="M14 5V2L22 9L14 16V13C7 13 4 15 2 20C4 12 7 8 14 8V5Z" />
                         </svg>
                     </motion.button>
+
+                    {/* Compact Info Box (Below Share) */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="bg-blue-900/30 border border-white/10 rounded-lg p-2.5 mx-1 backdrop-blur-sm"
+                    >
+                        <p className="text-white/90 text-xs leading-tight font-medium">
+                            "To know more about insurance and savings products, please connect with our relationship manager."
+                        </p>
+                    </motion.div>
 
                     {/* Call Now */}
                     <button
@@ -173,7 +173,7 @@ export default function ResultScreen({ score, onRestart, onThankYou, firstName }
                     {/* Try Again Button (Small - At Bottom) */}
                     <button
                         onClick={onRestart}
-                        className="text-white/70 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors underline underline-offset-4 mt-2"
+                        className="text-white/70 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors underline underline-offset-4 mt-1"
                     >
                         Try Again
                     </button>

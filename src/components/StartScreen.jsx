@@ -219,7 +219,7 @@ export default function StartScreen({ onStart }) {
                                             <Check className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" strokeWidth={4} />
                                         </div>
                                         <label htmlFor="terms" className="text-[10px] sm:text-xs font-semibold text-slate-500 leading-tight select-none">
-                                            I agree to the <button type="button" onClick={() => setShowTerms(true)} className="text-[#0066B2] hover:underline font-bold">Terms & Conditions</button>
+                                            I agree to the <button type="button" onClick={() => setShowTerms(true)} className="text-[#0066B2] hover:underline font-bold inline">Term & condition</button> and Acknowledge the Privacy Policy.
                                         </label>
                                     </div>
 
@@ -272,7 +272,7 @@ export default function StartScreen({ onStart }) {
                                         I hereby authorize Bajaj Life Insurance Limited to call me on the contact number made available by me on the website with a specific request to call back. I further declare that, irrespective of my contact number being registered on National Customer Preference Register (NCPR) or on National Do Not Call Registry (NDNC), any call made, SMS or WhatsApp sent in response to my request shall not be construed as an Unsolicited Commercial Communication even though the content of the call may be for the purposes of explaining various insurance products and services or solicitation and procurement of insurance business.
                                     </p>
                                     <p>
-                                        Please refer to <a href="#" target="_blank" rel="noopener noreferrer" className="text-[#0066B2] hover:underline font-bold">BALIC Privacy Policy</a>.
+                                        Please refer to BALIC Privacy Policy.
                                     </p>
                                 </div>
                                 <button
